@@ -16,17 +16,26 @@ public abstract class AbstractRobotFactory implements IRobotFactory {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRobotFactory.class);
     protected final PluginProperties pluginProperties;
     protected final BlocklyDropdownFactory blocklyDropdown2EnumFactory;
+    protected final String beginnerToolbox;
+    protected final String expertToolbox;
 
     public AbstractRobotFactory(PluginProperties pluginProperties) {
-
         this.pluginProperties = pluginProperties;
         this.blocklyDropdown2EnumFactory = new BlocklyDropdownFactory(this.pluginProperties);
+        this.beginnerToolbox =
+            readFileToString(this.getClass().getClassLoader(), this.pluginProperties.getStringProperty("robot.program.toolbox.beginner").trim());
+        this.expertToolbox = readFileToString(this.getClass().getClassLoader(), this.pluginProperties.getStringProperty("robot.program.toolbox.expert").trim());
     }
 
-    private String readFileToString(String filename) {
+    /*
+     * I could not use Util1 read resource, because the actual toolbox files are in different projects, so we need this:
+     */
+
+    private String readFileToString(ClassLoader callersClassLoader, String filename) {
         List<String> lines = Collections.emptyList();
         try {
-            lines = Files.readAllLines(Paths.get(ClassLoader.getSystemResource(filename).toURI()));
+            // I am not sure whether the system class loader is used all the time, so we'll use the callee's class loader
+            lines = Files.readAllLines(Paths.get(callersClassLoader.getResource(filename).toURI()));
         } catch ( IOException e ) {
             LOG.error("File " + filename + " does not exist");
             return "";
@@ -53,12 +62,12 @@ public abstract class AbstractRobotFactory implements IRobotFactory {
 
     @Override
     public final String getProgramToolboxBeginner() {
-        return readFileToString(getName() + ".beginner.toolbox");
+        return this.beginnerToolbox;
     }
 
     @Override
     public final String getProgramToolboxExpert() {
-        return readFileToString(getName() + ".expert.toolbox");
+        return this.expertToolbox;
     }
 
     @Override

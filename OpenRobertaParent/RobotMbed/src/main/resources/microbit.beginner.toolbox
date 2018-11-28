@@ -1,4 +1,4 @@
-<toolbox_set id="toolboxBeginner" style="display: none">
+<toolbox_set id="toolbox" style="display: none">
   <category name="TOOLBOX_ACTION" svg="true">
     <block type="mbedActions_display_text">
       <value name="OUT">
@@ -18,26 +18,16 @@
       </value>
     </block>
     <block type="mbedActions_display_clear"/>
-    <block type="mbedActions_leds_on">
-      <value name="COLOR">
-        <block type="mbedColour_picker">
-          <field name="COLOUR">#ff0000</field>
-        </block>
-      </value>
-    </block>
-    <block type="mbedActions_leds_off"/>
-    <block type="mbedActions_play_note"/>
   </category>
   <category name="TOOLBOX_SENSOR" svg="true">
-    <block type="robSensors_key_getSample"/>
-    <block type="robSensors_pintouch_getSample"/>
-    <block type="robSensors_gesture_getSample"/>
-    <block type="robSensors_compass_getSample"/>
-    <block type="robSensors_sound_getSample"/>
-    <block type="robSensors_timer_getSample"/>
+    <block type="mbedSensors_key_isPressed"/>
+    <block type="mbedSensors_gesture_isActive"/>
+    <block type="mbedSensors_compass_getSample"/>
+    <block type="mbedSensors_timer_getSample"/>
     <block type="mbedSensors_timer_reset"/>
-    <block type="robSensors_temperature_getSample"/>
-    <block type="robSensors_light_getSample"/>
+    <block type="mbedSensors_temperature_getSample"/>
+    <block type="mbedSensors_pin_isTouched"/>
+    <block type="robSensors_accelerometer_getSample"/>
   </category>
   <category name="TOOLBOX_CONTROL" svg="true">
     <block type="robControls_if"/>
@@ -61,7 +51,7 @@
       <value name="WAIT0">
         <block type="logic_compare">
           <value name="A">
-            <block type="robSensors_getSample"/>
+            <block type="mbedSensors_getSample"/>
           </value>
           <value name="B">
             <block type="logic_boolean"/>
@@ -94,32 +84,6 @@
   <category name="TOOLBOX_TEXT" svg="true">
     <block type="text"/>
     <block type="text_comment"/>
-  </category>
-  <category name="TOOLBOX_COLOUR" svg="true">
-    <block type="mbedColour_picker">
-      <field name="COLOUR">#999999</field>
-    </block>
-    <block type="mbedColour_picker">
-      <field name="COLOUR">#cc0000</field>
-    </block>
-    <block type="mbedColour_picker">
-      <field name="COLOUR">#ff6600</field>
-    </block>
-    <block type="mbedColour_picker">
-      <field name="COLOUR">#ffcc33</field>
-    </block>
-    <block type="mbedColour_picker">
-      <field name="COLOUR">#33cc00</field>
-    </block>
-    <block type="mbedColour_picker">
-      <field name="COLOUR">#00cccc</field>
-    </block>
-    <block type="mbedColour_picker">
-      <field name="COLOUR">#3366ff</field>
-    </block>
-    <block type="mbedColour_picker">
-      <field name="COLOUR">#cc33cc</field>
-    </block>
   </category>
   <category name="TOOLBOX_IMAGE" svg="true">
     <block type="mbedImage_image"/>
