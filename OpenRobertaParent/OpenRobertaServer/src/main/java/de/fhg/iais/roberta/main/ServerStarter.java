@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -63,6 +64,13 @@ import joptsimple.OptionSpec;
  */
 public class ServerStarter {
     private static final Logger LOG = LoggerFactory.getLogger(ServerStarter.class);
+    private static final java.util.logging.Logger JERSEY_LOGGER = java.util.logging.Logger.getLogger("com.sun.jersey");
+    private static final java.util.logging.Logger MCHANGE_LOGGER = java.util.logging.Logger.getLogger("com.mchange");
+
+    static {
+        JERSEY_LOGGER.setLevel(Level.SEVERE);
+        MCHANGE_LOGGER.setLevel(Level.SEVERE);
+    }
 
     private final ServerProperties serverProperties; // for the startup
     private Injector injector;
@@ -101,8 +109,8 @@ public class ServerStarter {
     public ServerStarter(String propertyPath, List<String> defines) {
         Properties properties = Util1.loadAndMergeProperties(propertyPath, defines);
         setupPropertyForDatabaseConnection(properties);
-        serverProperties = new ServerProperties(properties);
-        Util.setServerVersion(serverProperties.getStringProperty("openRobertaServer.version"));
+        this.serverProperties = new ServerProperties(properties);
+        Util.setServerVersion(this.serverProperties.getStringProperty("openRobertaServer.version"));
     }
 
     /**
@@ -111,9 +119,9 @@ public class ServerStarter {
      * @return the server
      */
     public Server start() throws IOException {
-        String host = serverProperties.getStringProperty("server.ip");
-        int httpPort = serverProperties.getIntProperty("server.port", 0);
-        int httpsPort = serverProperties.getIntProperty("server.portHttps", 0);
+        String host = this.serverProperties.getStringProperty("server.ip");
+        int httpPort = this.serverProperties.getIntProperty("server.port", 0);
+        int httpsPort = this.serverProperties.getIntProperty("server.portHttps", 0);
 
         Server server = new Server();
         List<ServerConnector> connectors = new ArrayList<>();
@@ -126,11 +134,11 @@ public class ServerStarter {
         }
         if ( httpsPort > 0 ) {
             SslContextFactory sslContextFactory = new SslContextFactory(); //NOSONAR : no need to close. Active until program termination
-            String keyStoreUri = serverProperties.getStringProperty("server.keystore.uri");
+            String keyStoreUri = this.serverProperties.getStringProperty("server.keystore.uri");
             if ( keyStoreUri == null ) {
                 keyStoreUri = ServerStarter.class.getResource("/keystore.jks").toExternalForm();
             }
-            String password = serverProperties.getStringProperty("server.keystore.password");
+            String password = this.serverProperties.getStringProperty("server.keystore.password");
             sslContextFactory.setKeyStorePath(keyStoreUri);
             sslContextFactory.setKeyStorePassword(password);
             sslContextFactory.setKeyManagerPassword(password);
@@ -143,8 +151,8 @@ public class ServerStarter {
 
         // configure robot plugins
         RobotCommunicator robotCommunicator = new RobotCommunicator();
-        Map<String, IRobotFactory> robotPluginMap = configureRobotPlugins(robotCommunicator, serverProperties);
-        RobertaGuiceServletConfig robertaGuiceServletConfig = new RobertaGuiceServletConfig(serverProperties, robotPluginMap, robotCommunicator);
+        Map<String, IRobotFactory> robotPluginMap = configureRobotPlugins(robotCommunicator, this.serverProperties);
+        RobertaGuiceServletConfig robertaGuiceServletConfig = new RobertaGuiceServletConfig(this.serverProperties, robotPluginMap, robotCommunicator);
 
         // 1. REST API with /rest prefix
         ServletContextHandler restHttpHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -183,7 +191,7 @@ public class ServerStarter {
         ServletHolder staticResourceServlet = defaultHandler.addServlet(DefaultServlet.class, "/*");
         staticResourceServlet.setInitParameter("dirAllowed", "false");
         staticResourceServlet.setInitParameter("precompressed", "gzip=.gz");
-        String dirNameStaticResources = serverProperties.getStringProperty("server.staticresources.dir");
+        String dirNameStaticResources = this.serverProperties.getStringProperty("server.staticresources.dir");
         staticResourceServlet.setInitParameter("resourceBase", new File(dirNameStaticResources).toPath().toAbsolutePath().normalize().toUri().toASCIIString());
         staticResourceServlet.setInitParameter("cacheControl", "private, must-revalidate");
 
@@ -220,7 +228,7 @@ public class ServerStarter {
         Ev3SensorLoggingWS.setGuiceInjector(this.injector);
 
         checkRobotPluginsDB();
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook("embedded".equals(serverProperties.getStringProperty("database.mode")), this.injector));
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook("embedded".equals(this.serverProperties.getStringProperty("database.mode")), this.injector));
         LOG.info("Shutdown hook added. If the server is gracefully stopped in the future, a shutdown message is logged");
         logTheNumberOfStoredPrograms();
 
@@ -278,13 +286,13 @@ public class ServerStarter {
      */
     private void checkRobotPluginsDB() {
         try {
-            List<String> robotWhitelist = serverProperties.getRobotWhitelist();
+            List<String> robotWhitelist = this.serverProperties.getRobotWhitelist();
             DbSession session = this.injector.getInstance(SessionFactoryWrapper.class).getSession();
             RobotDao robotDao = new RobotDao(session);
             for ( String robotToUse : robotWhitelist ) {
                 String pluginName = robotToUse;
-                if ( serverProperties.getStringProperty("robot.plugin." + pluginName + ".group") != null ) {
-                    pluginName = serverProperties.getStringProperty("robot.plugin." + pluginName + ".group");
+                if ( this.serverProperties.getStringProperty("robot.plugin." + pluginName + ".group") != null ) {
+                    pluginName = this.serverProperties.getStringProperty("robot.plugin." + pluginName + ".group");
                 }
                 Robot pluginRobot = robotDao.loadRobot(pluginName);
                 if ( pluginRobot == null ) {

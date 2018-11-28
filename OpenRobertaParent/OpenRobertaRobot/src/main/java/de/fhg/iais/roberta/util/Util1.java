@@ -179,19 +179,19 @@ public class Util1 {
         try {
             if ( propertyURI == null || propertyURI.trim().equals("") ) {
                 if ( doLogging ) {
-                    Util1.LOG.info("default URI from classpath. Using: " + Util1.PROPERTY_DEFAULT_PATH);
+                    Util1.LOG.debug("default URI from classpath. Using: " + Util1.PROPERTY_DEFAULT_PATH);
                 }
                 return Util1.class.getClassLoader().getResourceAsStream(Util1.PROPERTY_DEFAULT_PATH);
             } else if ( propertyURI.startsWith("file:") ) {
                 String filesystemPathName = propertyURI.substring(5);
                 if ( doLogging ) {
-                    Util1.LOG.info("Operating on the file system. Using the path: " + filesystemPathName);
+                    Util1.LOG.debug("Operating on the file system. Using the path: " + filesystemPathName);
                 }
                 return new FileInputStream(filesystemPathName);
             } else if ( propertyURI.startsWith("classpath:") ) {
                 String classPathName = propertyURI.substring(10);
                 if ( doLogging ) {
-                    Util1.LOG.info("Operating on the classpath. Using the resource: " + classPathName);
+                    Util1.LOG.debug("Operating on the classpath. Using the resource: " + classPathName);
                 }
                 return Util1.class.getClassLoader().getResourceAsStream(classPathName);
             } else {
