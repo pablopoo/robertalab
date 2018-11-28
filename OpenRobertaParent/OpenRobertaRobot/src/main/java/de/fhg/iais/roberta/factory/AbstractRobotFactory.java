@@ -1,5 +1,12 @@
 package de.fhg.iais.roberta.factory;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +23,23 @@ public abstract class AbstractRobotFactory implements IRobotFactory {
         this.blocklyDropdown2EnumFactory = new BlocklyDropdownFactory(this.pluginProperties);
     }
 
+    private String readFileToString(String filename) {
+        List<String> lines = Collections.emptyList();
+        try {
+            lines = Files.readAllLines(Paths.get(ClassLoader.getSystemResource(filename).toURI()));
+        } catch ( IOException e ) {
+            LOG.error("File " + filename + " does not exist");
+            return "";
+        } catch ( URISyntaxException e ) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for ( String line : lines ) {
+            sb.append(line);
+        }
+        return sb.toString();
+    }
+
     @Override
     public BlocklyDropdownFactory getBlocklyDropdownFactory() {
         return this.blocklyDropdown2EnumFactory;
@@ -29,12 +53,12 @@ public abstract class AbstractRobotFactory implements IRobotFactory {
 
     @Override
     public final String getProgramToolboxBeginner() {
-        return this.pluginProperties.getStringProperty("robot.program.toolbox.beginner");
+        return readFileToString(getName() + ".beginner.toolbox");
     }
 
     @Override
     public final String getProgramToolboxExpert() {
-        return this.pluginProperties.getStringProperty("robot.program.toolbox.expert");
+        return readFileToString(getName() + ".expert.toolbox");
     }
 
     @Override
@@ -55,6 +79,10 @@ public abstract class AbstractRobotFactory implements IRobotFactory {
     @Override
     public final String getRealName() {
         return this.pluginProperties.getStringProperty("robot.real.name");
+    }
+
+    public final String getName() {
+        return this.pluginProperties.getStringProperty("robot.name");
     }
 
     @Override
