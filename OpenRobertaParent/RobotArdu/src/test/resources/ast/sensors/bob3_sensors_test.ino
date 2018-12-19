@@ -1,7 +1,7 @@
 #include <math.h> 
 #include <BOB3.h> 
 #include <NEPODefs.h>
-Bob3 myBob;
+Bob3 rob;
 
     
 double item;
@@ -17,11 +17,11 @@ void setup()
 
 void loop()
 {
-    item = myBob.getIRLight();
-    item = myBob.getIRSensor();
-    item = myBob.getTemperature();
-    item = myBob.getID();
+    item = rob.getIRLight();
+    item = rob.getIRSensor();
+    item = rob.getTemperature();
+    item = rob.getID();
     item = (int) (millis() - __time);
-    item2 = ( myBob.getArm(2) == 1 );
+    item2 = ( rob.getArm(2) == 1 );
     __time = millis();
 }

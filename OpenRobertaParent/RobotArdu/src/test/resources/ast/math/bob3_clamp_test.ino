@@ -1,7 +1,7 @@
 #include <math.h> 
 #include <BOB3.h> 
 #include <NEPODefs.h>
-Bob3 myBob;
+Bob3 rob;
 
     
 double item;

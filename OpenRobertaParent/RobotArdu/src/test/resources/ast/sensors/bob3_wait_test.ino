@@ -1,7 +1,7 @@
 #include <math.h> 
 #include <BOB3.h> 
 #include <NEPODefs.h>
-Bob3 myBob;
+Bob3 rob;
 
     
 unsigned long __time = millis();
@@ -14,67 +14,67 @@ void setup()
 void loop()
 {
     while (true) {
-        if ( ( myBob.getArm(2) == 1 ) == true ) {
+        if ( ( rob.getArm(2) == 1 ) == true ) {
             break;
         }
         delay(1);
     }
     while (true) {
-        if ( ( myBob.getArm(2) == 2 ) == true ) {
+        if ( ( rob.getArm(2) == 2 ) == true ) {
             break;
         }
         delay(1);
     }
     while (true) {
-        if ( ( myBob.getArm(2) == 3 ) == true ) {
+        if ( ( rob.getArm(2) == 3 ) == true ) {
             break;
         }
         delay(1);
     }
     while (true) {
-        if ( ( myBob.getArm(2) > 0 ) == true ) {
+        if ( ( rob.getArm(2) > 0 ) == true ) {
             break;
         }
         delay(1);
     }
     while (true) {
-        if ( ( myBob.getArm(1) == 1 ) == true ) {
+        if ( ( rob.getArm(1) == 1 ) == true ) {
             break;
         }
         delay(1);
     }
     while (true) {
-        if ( ( myBob.getArm(1) == 2 ) == true ) {
+        if ( ( rob.getArm(1) == 2 ) == true ) {
             break;
         }
         delay(1);
     }
     while (true) {
-        if ( ( myBob.getArm(1) == 3 ) == true ) {
+        if ( ( rob.getArm(1) == 3 ) == true ) {
             break;
         }
         delay(1);
     }
     while (true) {
-        if ( ( myBob.getArm(1) > 0 ) == true ) {
+        if ( ( rob.getArm(1) > 0 ) == true ) {
             break;
         }
         delay(1);
     }
     while (true) {
-        if ( myBob.getIRLight() < 30 ) {
+        if ( rob.getIRLight() < 30 ) {
             break;
         }
         delay(1);
     }
     while (true) {
-        if ( myBob.getIRSensor() < 30 ) {
+        if ( rob.getIRSensor() < 30 ) {
             break;
         }
         delay(1);
     }
     while (true) {
-        if ( myBob.getTemperature() < 20 ) {
+        if ( rob.getTemperature() < 20 ) {
             break;
         }
         delay(1);
