@@ -64,6 +64,16 @@ inline bool isPrimeD(double d) {
   return true;
 }
 
+inline int _randomIntegerInRange(int val1, int val2){
+  int min = fmin(val1, val2);
+  int max = fmax(val1, val2) + 1;
+  return min + (rand()%(min - max));
+}
+
+inline float _randomFloat(){
+  return (float)rand()/(float)RAND_MAX;
+}
+
 template <typename T>
 T _getListElementByIndex(std::list<T> &list, unsigned index) {
     auto iterator = list.begin();

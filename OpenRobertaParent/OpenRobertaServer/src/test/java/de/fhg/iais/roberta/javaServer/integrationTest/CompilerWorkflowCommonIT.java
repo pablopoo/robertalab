@@ -16,7 +16,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -140,12 +139,11 @@ public class CompilerWorkflowCommonIT {
         }
     }
 
-    @Ignore
     @Test
     public void testShowGeneratedProgram() {
-        String robot = "calliope2017";
+        String robot = "bob3";
         String robotDir = ROBOTS.getJSONObject(robot).getString("dir");
-        String templateName = "mathAndLists.xml";
+        String templateName = "mathLogic.xml";
         final String template = getTemplateWithConfigReplaced(robotDir);
         final String generatedProgram = generateFinalProgram(template, templateName);
         LOG.info("the generated program for robot " + robot + " with template " + templateName + " is:\n" + generatedProgram);
